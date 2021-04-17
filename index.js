@@ -23,6 +23,7 @@ client.connect(err => {
   const adminCollection = client.db("mama-sewing").collection("admin");
   const serviceCollection = client.db("mama-sewing").collection("addService");
   const reviewCollection = client.db("mama-sewing").collection("review");
+  const bookingCollection = client.db("mama-sewing").collection("bookService");
 
     app.post("/addAdmin", (req, res) => {
       const email = req.body;
@@ -47,7 +48,7 @@ client.connect(err => {
         size: file.size,
         img: Buffer.from(encImg, "base64"),
       };
-      console.log(image);
+      // console.log(image);
   
       serviceCollection.insertOne( {newService, image} )
       .then((result) => {
@@ -57,6 +58,24 @@ client.connect(err => {
   
     });
 
+    app.post("/addBooking", (req, res) => {
+      const newBooking = req.body;
+      console.log(newBooking);
+      bookingCollection.insertOne(newBooking)
+      .then((result) => {
+        res.send(result.insertedCount > 0);
+        // console.log(result);
+      });
+    });
+
+    app.get("/bookings", (req, res) => {
+      bookingCollection.find({})
+      .toArray((err, bookings) => {
+        res.send(bookings);
+        console.log(bookings);
+      });
+    });
+    
     app.get("/services", (req, res) => {
       serviceCollection.find({})
       .toArray((err, services) => {
@@ -65,11 +84,21 @@ client.connect(err => {
       });
     });
 
+    app.delete('/deleteService/:serviceId', (req, res) => {
+      const deleteService = {_id: ObjectId(req.params.serviceId)}
+      console.log(deleteService);
+      serviceCollection.deleteOne(deleteService)
+      .then(result => {
+          res.send(result.deletedCount > 0)
+          // console.log(result);
+      })
+  })
+
     app.get('/services/:serviceId', (req, res) => {
       serviceCollection.find({_id: ObjectId(req.params.serviceId)})
       .toArray((err, services) => {
         res.send(services[0]);
-        // console.log(services[0]);
+        console.log(services[0]);
       });
     });
 
