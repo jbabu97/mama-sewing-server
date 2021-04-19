@@ -7,7 +7,7 @@ const MongoClient = require('mongodb').MongoClient;
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '50mb', extended: true }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("doctors"));
 app.use(fileUpload());
@@ -24,22 +24,33 @@ client.connect(err => {
   const serviceCollection = client.db("mama-sewing").collection("addService");
   const reviewCollection = client.db("mama-sewing").collection("review");
   const bookingCollection = client.db("mama-sewing").collection("bookService");
+  const statusCollection = client.db("mama-sewing").collection("status");
 
     app.post("/addAdmin", (req, res) => {
       const email = req.body;
-      console.log(email);
+      // console.log(email);
       adminCollection.insertOne(email)
       .then((result) => {
         res.send(result.insertedCount > 0);
         // console.log(result);
       });
     });
+
+    // app.post("/isAdmin", (req, res) => {
+    //   const email = req.body.email;
+    //   // console.log(email);
+    //   adminCollection.find({ email: email })
+    //   .toArray((err, admins) => {
+    //           res.send(admins.length > 0);
+    //           // console.log(admins);
+    //   });
+    // });
     
     app.post("/addService", (req, res) => {
       const file = req.files.file;
       const newService = req.body;
       // const serviceCharge = req.body.serviceCharge;
-      console.log(newService, file);
+      // console.log(newService, file);
       const newImg = file.data;
       const encImg = newImg.toString("base64");
   
@@ -72,7 +83,7 @@ client.connect(err => {
       bookingCollection.find({})
       .toArray((err, bookings) => {
         res.send(bookings);
-        console.log(bookings);
+        // console.log(bookings);
       });
     });
     
@@ -84,6 +95,17 @@ client.connect(err => {
       });
     });
 
+    app.get(`/serviceDetails/:serviceId`, (req, res) => {
+      const serviceDetails = {_id: ObjectId(req.params.serviceId)}
+      console.log(serviceDetails);
+      serviceCollection.find(serviceDetails)
+      .toArray((err, services) => {
+        // console.log(services[0]);
+        res.send(services[0]);
+      })
+    });
+
+
     app.delete('/deleteService/:serviceId', (req, res) => {
       const deleteService = {_id: ObjectId(req.params.serviceId)}
       console.log(deleteService);
@@ -93,15 +115,6 @@ client.connect(err => {
           // console.log(result);
       })
   })
-
-    app.get('/services/:serviceId', (req, res) => {
-      serviceCollection.find({_id: ObjectId(req.params.serviceId)})
-      .toArray((err, services) => {
-        res.send(services[0]);
-        console.log(services[0]);
-      });
-    });
-
 
     app.post("/addReview", (req, res) => {
       const review = req.body;
@@ -118,6 +131,16 @@ client.connect(err => {
       .toArray((err, reviews) => {
         res.send(reviews);
         // console.log(reviews);
+      });
+    });
+
+    app.post("/status", (req, res) => {
+      const status = req.body;
+      console.log(status);
+      statusCollection.insertOne(status)
+      .then((result) => {
+        // res.send(result.insertedCount > 0);
+        console.log(result);
       });
     });
 
