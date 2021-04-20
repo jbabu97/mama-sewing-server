@@ -73,9 +73,6 @@ client.connect(err => {
     app.post("/addService", (req, res) => {
       const file = req.files.file;
       const newService = req.body;
-      // const serviceCharge = req.body.serviceCharge;
-      // console.log(newService, file);
-      const newImg = file.data;
       const encImg = newImg.toString("base64");
   
       let image = {
@@ -88,7 +85,7 @@ client.connect(err => {
       serviceCollection.insertOne( {newService, image} )
       .then((result) => {
         res.send(result.insertedCount > 0);
-        // console.log(result);
+        console.log(result);
       });
   
     });
@@ -106,7 +103,7 @@ client.connect(err => {
       console.log(serviceDetails);
       serviceCollection.find(serviceDetails)
       .toArray((err, services) => {
-        console.log(services[0]);
+        // console.log(services[0]);
         res.send(services[0]);
       })
     });
@@ -117,7 +114,7 @@ client.connect(err => {
       bookingCollection.insertOne(newBooking)
       .then((result) => {
         res.send(result.insertedCount > 0);
-        // console.log(result);
+        console.log(result);
       });
     });
 
@@ -133,7 +130,7 @@ client.connect(err => {
 
     app.delete('/deleteService/:serviceId', (req, res) => {
       const deleteService = {_id: ObjectId(req.params.serviceId)}
-      console.log(deleteService);
+      // console.log(deleteService);
       serviceCollection.deleteOne(deleteService)
       .then(result => {
           res.send(result.deletedCount > 0)
@@ -143,7 +140,7 @@ client.connect(err => {
 
     app.post("/addReview", (req, res) => {
       const review = req.body;
-      console.log(review);
+      // console.log(review);
       reviewCollection.insertOne(review)
       .then((result) => {
         res.send(result.insertedCount > 0);
