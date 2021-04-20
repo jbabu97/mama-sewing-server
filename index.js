@@ -36,15 +36,39 @@ client.connect(err => {
       });
     });
 
-    // app.post("/isAdmin", (req, res) => {
-    //   const email = req.body.email;
-    //   // console.log(email);
-    //   adminCollection.find({ email: email })
-    //   .toArray((err, admins) => {
-    //           res.send(admins.length > 0);
-    //           // console.log(admins);
-    //   });
-    // });
+    app.post("/bookingByCustomer", (req, res) => {
+      const email = req.body.email;
+      console.log('email', email);
+      adminCollection.find({ email: email })
+      .toArray((err, admins) => {
+        console.log('admins mail', admins);
+              if(admins.length > 0) {
+                bookingCollection.find({})
+                .toArray((err, results) => {
+                  res.send(results);
+                  // console.log('admin', results);
+                });
+              }
+              else{
+                bookingCollection.find({email: email})
+                .toArray((err, results) => {
+                  res.send(results);
+                  // console.log('user', results);
+                });
+              }
+              // console.log(admins);
+      });
+    });
+    
+    app.post("/isAdmin", (req, res) => {
+      const email = req.body.email;
+      // console.log(email);
+      adminCollection.find({ email: email })
+      .toArray((err, admins) => {
+        res.send(admins.length > 0);
+        // console.log(admins);
+});
+    });
     
     app.post("/addService", (req, res) => {
       const file = req.files.file;
@@ -69,6 +93,24 @@ client.connect(err => {
   
     });
 
+    app.get("/services", (req, res) => {
+      serviceCollection.find({})
+      .toArray((err, services) => {
+        res.send(services);
+        // console.log(services);
+      });
+    });
+
+    app.get(`/serviceDetails/:serviceId`, (req, res) => {
+      const serviceDetails = {_id: ObjectId(req.params.serviceId)}
+      console.log(serviceDetails);
+      serviceCollection.find(serviceDetails)
+      .toArray((err, services) => {
+        console.log(services[0]);
+        res.send(services[0]);
+      })
+    });
+
     app.post("/addBooking", (req, res) => {
       const newBooking = req.body;
       console.log(newBooking);
@@ -87,24 +129,7 @@ client.connect(err => {
       });
     });
     
-    app.get("/services", (req, res) => {
-      serviceCollection.find({})
-      .toArray((err, services) => {
-        res.send(services);
-        // console.log(services);
-      });
-    });
-
-    app.get(`/serviceDetails/:serviceId`, (req, res) => {
-      const serviceDetails = {_id: ObjectId(req.params.serviceId)}
-      console.log(serviceDetails);
-      serviceCollection.find(serviceDetails)
-      .toArray((err, services) => {
-        // console.log(services[0]);
-        res.send(services[0]);
-      })
-    });
-
+    
 
     app.delete('/deleteService/:serviceId', (req, res) => {
       const deleteService = {_id: ObjectId(req.params.serviceId)}
@@ -133,17 +158,6 @@ client.connect(err => {
         // console.log(reviews);
       });
     });
-
-    app.post("/status", (req, res) => {
-      const status = req.body;
-      console.log(status);
-      statusCollection.insertOne(status)
-      .then((result) => {
-        // res.send(result.insertedCount > 0);
-        console.log(result);
-      });
-    });
-
 
 });
 
