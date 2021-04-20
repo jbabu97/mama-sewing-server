@@ -12,7 +12,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("doctors"));
 app.use(fileUpload());
 
-const port = 4747;
+const port = process.env.PORT || 4747;
 
 
 
@@ -24,49 +24,39 @@ client.connect(err => {
   const serviceCollection = client.db("mama-sewing").collection("addService");
   const reviewCollection = client.db("mama-sewing").collection("review");
   const bookingCollection = client.db("mama-sewing").collection("bookService");
-  const statusCollection = client.db("mama-sewing").collection("status");
 
     app.post("/addAdmin", (req, res) => {
       const email = req.body;
-      // console.log(email);
       adminCollection.insertOne(email)
       .then((result) => {
         res.send(result.insertedCount > 0);
-        // console.log(result);
       });
     });
 
     app.post("/bookingByCustomer", (req, res) => {
       const email = req.body.email;
-      console.log('email', email);
       adminCollection.find({ email: email })
       .toArray((err, admins) => {
-        console.log('admins mail', admins);
               if(admins.length > 0) {
                 bookingCollection.find({})
                 .toArray((err, results) => {
                   res.send(results);
-                  // console.log('admin', results);
                 });
               }
               else{
                 bookingCollection.find({email: email})
                 .toArray((err, results) => {
                   res.send(results);
-                  // console.log('user', results);
                 });
               }
-              // console.log(admins);
       });
     });
     
     app.post("/isAdmin", (req, res) => {
       const email = req.body.email;
-      // console.log(email);
       adminCollection.find({ email: email })
       .toArray((err, admins) => {
         res.send(admins.length > 0);
-        // console.log(admins);
 });
     });
     
@@ -80,8 +70,7 @@ client.connect(err => {
         size: file.size,
         img: Buffer.from(encImg, "base64"),
       };
-      // console.log(image);
-  
+        
       serviceCollection.insertOne( {newService, image} )
       .then((result) => {
         res.send(result.insertedCount > 0);
@@ -94,27 +83,26 @@ client.connect(err => {
       serviceCollection.find({})
       .toArray((err, services) => {
         res.send(services);
-        // console.log(services);
+        
       });
     });
 
     app.get(`/serviceDetails/:serviceId`, (req, res) => {
       const serviceDetails = {_id: ObjectId(req.params.serviceId)}
-      console.log(serviceDetails);
+      
       serviceCollection.find(serviceDetails)
       .toArray((err, services) => {
-        // console.log(services[0]);
         res.send(services[0]);
       })
     });
 
     app.post("/addBooking", (req, res) => {
       const newBooking = req.body;
-      console.log(newBooking);
+      
       bookingCollection.insertOne(newBooking)
       .then((result) => {
         res.send(result.insertedCount > 0);
-        console.log(result);
+        
       });
     });
 
@@ -122,7 +110,7 @@ client.connect(err => {
       bookingCollection.find({})
       .toArray((err, bookings) => {
         res.send(bookings);
-        // console.log(bookings);
+        
       });
     });
     
@@ -130,21 +118,21 @@ client.connect(err => {
 
     app.delete('/deleteService/:serviceId', (req, res) => {
       const deleteService = {_id: ObjectId(req.params.serviceId)}
-      // console.log(deleteService);
+      
       serviceCollection.deleteOne(deleteService)
       .then(result => {
           res.send(result.deletedCount > 0)
-          // console.log(result);
+          
       })
   })
 
     app.post("/addReview", (req, res) => {
       const review = req.body;
-      // console.log(review);
+      
       reviewCollection.insertOne(review)
       .then((result) => {
         res.send(result.insertedCount > 0);
-        // console.log(result);
+        
       });
     });
 
@@ -152,15 +140,11 @@ client.connect(err => {
       reviewCollection.find({})
       .toArray((err, reviews) => {
         res.send(reviews);
-        // console.log(reviews);
+        
       });
     });
 
 });
-
-
-
-
 
 
 
