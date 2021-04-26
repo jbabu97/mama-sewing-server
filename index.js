@@ -12,8 +12,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("doctors"));
 app.use(fileUpload());
 
+// process.env.PORT || 
 const port = process.env.PORT || 4747;
-
+// console.log(process.env.DB_PASS);
 
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.7dhhj.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
@@ -63,6 +64,7 @@ client.connect(err => {
     app.post("/addService", (req, res) => {
       const file = req.files.file;
       const newService = req.body;
+      const newImg = file.data;
       const encImg = newImg.toString("base64");
   
       let image = {
