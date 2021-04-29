@@ -1,21 +1,32 @@
 # # Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-# Project name:
+# Project name: mama-sewing
 
-mama-sewing
+## This site has moved here: 
+[https://mama-sewing.web.app/]
+
+
 
 ## Key Features
 
->> This is a tailoring service site
->> There are 6 sections in home page
->> Two dynamic sections
->> Apply login authentication
->> Use Stripe as a payment method
+### This is a Tailoring service website
+### User can login with google account 
+### There are different dashboard for users and admin
+### User can book any service using payment method
+### Integrated Private Route system
+### Use MongoDB as a Database
 
-### Deployment
+## Uses Framework/libraries
 
-This site has moved here: [https://mama-sewing.web.app/]
+### React js
+### React Router-Dom
+### React-form-hook
+### React-spinner
+### axios
+### bootstrap
+### font-awesome
+### stripe
+
 # complete-website-client-jbabu97
 
