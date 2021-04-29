@@ -116,6 +116,21 @@ client.connect(err => {
       });
     });
     
+    app.patch('/statusUpdate/:bookingId', (req, res) => {
+      const update = ObjectId(req.params.bookingId)
+      // console.log('id', update);
+      const newStatus = req.body;
+      // console.log('status', newStatus);
+      bookingCollection.findOneAndUpdate(
+        {_id: update},
+        {$set: {status: newStatus}}
+        )
+      .then(result => {
+        console.log(result);
+          res.send(result.ok > 0)
+          
+      })
+  })
     
 
     app.delete('/deleteService/:serviceId', (req, res) => {
