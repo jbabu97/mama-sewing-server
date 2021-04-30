@@ -119,11 +119,11 @@ client.connect(err => {
     app.patch('/statusUpdate/:bookingId', (req, res) => {
       const update = ObjectId(req.params.bookingId)
       // console.log('id', update);
-      const newStatus = req.body;
+      const status = req.body;
       // console.log('status', newStatus);
       bookingCollection.findOneAndUpdate(
         {_id: update},
-        {$set: {status: newStatus}}
+        {$set: {status: status.status}}
         )
       .then(result => {
         console.log(result);
